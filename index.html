@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منيو المثلث الذهبي - 3D Modern</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        premium: {
+                            dark: '#0B0F19', // Very Dark Blue/Black
+                            card: '#151C2C', // Slightly lighter
+                            gold: '#D4AF37', // Metallic Gold
+                            goldHover: '#F3E5AB', // Light Gold
+                            accent: '#E63946', // Red accent for urgency
+                        }
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 20px -5px rgba(212, 175, 55, 0.4)',
+                        'gold-glow-lg': '0 0 40px -10px rgba(212, 175, 55, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F19;
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* 3D Golden Card Effect */
+        .golden-card {
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            perspective: 1000px;
+        }
+        .golden-card:hover {
+            transform: translateY(-12px) rotateX(4deg) rotateY(-4deg);
+            box-shadow: 0 30px 60px -12px rgba(212, 175, 55, 0.3);
+            border-color: rgba(212, 175, 55, 0.8);
+        }
+        .golden-card img {
+            transition: transform 0.5s ease;
+        }
+        .golden-card:hover img {
+            transform: scale(1.08) translateZ(20px);
+        }
+
+        /* Normal Item Effect */
+        .normal-item {
+            transition: all 0.3s ease;
+        }
+        .normal-item:hover {
+            background-color: #1A233A;
+            transform: translateX(-5px);
+            border-right: 4px solid #D4AF37;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="pb-28">
+
+    <!-- Header -->
+    <header class="pt-8 pb-6 px-4 text-center relative z-10">
+        <div class="inline-block p-1 rounded-full bg-gradient-to-r from-transparent via-premium-gold to-transparent mb-4">
+            <div class="bg-premium-dark rounded-full p-4 shadow-gold-glow">
+                <i class="fa-solid fa-crown text-3xl text-premium-gold"></i>
+            </div>
+        </div>
+        <h1 class="text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-premium-gold via-yellow-200 to-premium-gold">
+            ذا سيجنتشر
+        </h1>
+        <p class="text-gray-400 mt-2 font-medium">تجربة التذوق الفاخرة</p>
+    </header>
+
+    <!-- THE GOLDEN TRIANGLE SECTION (High Margin Items) -->
+    <main class="max-w-5xl mx-auto px-4 mt-4">
+        <div class="flex items-center justify-between mb-6 border-b border-gray-800 pb-2">
+            <h2 class="text-2xl font-bold text-premium-gold flex items-center gap-2">
+                <i class="fa-solid fa-star"></i> توصيات الشيف (المثلث الذهبي)
+            </h2>
+        </div>
+
+        <!-- 3D Grid for Golden Triangle -->
+        <!-- Center item is visually dominant on desktop -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-12" id="golden-triangle-container">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- STANDARD MENU SECTION -->
+        <div class="mt-16">
+            <div class="flex items-center justify-between mb-6 border-b border-gray-800 pb-2">
+                <h2 class="text-xl font-bold text-gray-300 flex items-center gap-2">
+                    <i class="fa-solid fa-list-ul text-gray-500"></i> القائمة الكلاسيكية
+                </h2>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="standard-menu-container">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Cart Button (Luxurious) -->
+    <div id="cart-floating-btn" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-11/12 max-w-sm bg-gradient-to-r from-premium-gold to-yellow-600 text-premium-dark rounded-full p-1 shadow-gold-glow-lg flex justify-between items-center cursor-pointer hidden z-40 transition-transform hover:scale-105" onclick="toggleCartModal()">
+        <div class="bg-premium-dark text-white rounded-full w-full py-3 px-5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <i class="fa-solid fa-cart-shopping text-xl text-premium-gold"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-premium-accent text-white text-xs font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-premium-dark">0</span>
+                </div>
+                <span class="font-bold text-lg">عرض السلة</span>
+            </div>
+            <div class="font-black text-xl text-premium-gold"><span id="cart-total">0</span></div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col justify-end backdrop-blur-md transition-opacity">
+        <div class="bg-premium-card w-full max-w-lg mx-auto rounded-t-3xl h-4/5 flex flex-col overflow-hidden border-t-2 border-premium-gold shadow-gold-glow-lg">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-premium-dark relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-premium-gold/10 to-transparent"></div>
+                <h2 class="text-2xl font-black text-premium-gold relative z-10">سلة المشتريات</h2>
+                <button onclick="toggleCartModal()" class="relative z-10 w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-premium-accent text-white transition">
+                    <i class="fa-solid fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6" id="cart-items">
+                <!-- Cart items -->
+            </div>
+
+            <div class="p-6 bg-premium-dark border-t border-gray-800">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-xl text-gray-400">المجموع الإجمالي:</span>
+                    <span class="text-premium-gold text-3xl font-black"><span id="modal-total">0</span></span>
+                </div>
+                <button onclick="sendOrderWhatsApp()" class="w-full bg-gradient-to-r from-premium-gold to-yellow-500 hover:from-yellow-500 hover:to-premium-gold text-premium-dark font-black py-4 rounded-xl text-xl flex items-center justify-center gap-3 transition-all shadow-gold-glow transform hover:-translate-y-1">
+                    <i class="fa-brands fa-whatsapp text-3xl"></i>
+                    تأكيد الطلب (واتساب)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const WHATSAPP_NUMBER = "213696832076"; 
+
+        // Menu Data (Divided into High Margin "Golden Triangle" and Standard)
+        const goldenTriangleItems = [
+            { id: 101, name: "ترافل واغيو الذهبي", desc: "لحم واغيو فاخر، جبن بري، صوص الكمأة (الترافل) الأسود، وورق الذهب الصالح للأكل", price: 85, img: "https://images.unsplash.com/photo-1586816001966-79b736744398?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", tag: "الأكثر مبيعاً" },
+            { id: 102, name: "ديناميت شرمب تندر", desc: "روبيان مقرمش مغطى بصوص الديناميت الحار الخاص بنا، يقدم في كأس كوكتيل", price: 45, img: "https://images.unsplash.com/photo-1559742811-822873691df8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", tag: "مقبلات فاخرة" },
+            { id: 103, name: "موهيتو الياقوت", desc: "مزيج التوت البري، النعناع الطازج، ولمسة من الرمان المدخن", price: 35, img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", tag: "انتعاش" }
+        ];
+
+        const standardItems = [
+            { id: 201, name: "برجر كلاسيك سويس", desc: "شريحة لحم، جبن سويسري، مشروم مشوي", price: 38, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 202, name: "دجاج كريسبي القيقب", desc: "دجاج مقرمش مع صوص المابل (القيقيب) والملفوف", price: 35, img: "https://images.unsplash.com/photo-1626082927389-6cd097cbc6ec?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 203, name: "بطاطس الكوماندوز", desc: "بطاطس مقلية مع الهالبينو، البصل المكرمل و3 أنواع جبن", price: 28, img: "https://images.unsplash.com/photo-1576107232684-1279f390859f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 204, name: "سلطة السيزر المشوية", desc: "خس رومين، دجاج مشوي، بارميزان، وخبز محمص", price: 32, img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" }
+        ];
+
+        let cart = [];
+
+        // Render Golden Triangle (3D Cards)
+        function renderGoldenTriangle() {
+            const container = document.getElementById('golden-triangle-container');
+            container.innerHTML = '';
+
+            goldenTriangleItems.forEach((item, index) => {
+                // Make the middle item (index 0 in visual RTL, but let's say Wagyu is index 0) larger on desktop
+                const isCenter = index === 0; 
+                const scaleClass = isCenter ? 'md:scale-105 md:-translate-y-4 z-10' : 'z-0';
+                const borderClass = isCenter ? 'border-premium-gold shadow-gold-glow' : 'border-gray-800';
+
+                container.innerHTML += `
+                    <div class="golden-card bg-premium-card rounded-3xl overflow-hidden border-2 ${borderClass} ${scaleClass} relative group">
+                        <div class="absolute top-4 right-4 bg-premium-dark/80 backdrop-blur-sm text-premium-gold text-xs font-black px-3 py-1.5 rounded-full border border-premium-gold/50 z-20">
+                            ${item.tag}
+                        </div>
+                        <div class="relative h-64 overflow-hidden bg-black">
+                            <div class="absolute inset-0 bg-gradient-to-t from-premium-card to-transparent z-10"></div>
+                            <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100">
+                        </div>
+                        <div class="p-6 relative z-20 -mt-12">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-black text-2xl text-white drop-shadow-md">${item.name}</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm mb-6 leading-relaxed min-h-[40px]">${item.desc}</p>
+                            <div class="flex justify-between items-center mt-auto">
+                                <span class="text-3xl font-black text-premium-gold">${item.price}</span>
+                                <button onclick="addToCart(${item.id}, 'golden')" class="bg-gradient-to-r from-premium-gold to-yellow-600 hover:from-yellow-500 hover:to-premium-gold text-premium-dark w-12 h-12 rounded-full flex items-center justify-center transition-transform hover:scale-110 shadow-gold-glow">
+                                    <i class="fa-solid fa-plus text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Render Standard Menu (Horizontal List layout to contrast with the Golden Triangle)
+        function renderStandardMenu() {
+            const container = document.getElementById('standard-menu-container');
+            container.innerHTML = '';
+
+            standardItems.forEach(item => {
+                container.innerHTML += `
+                    <div class="normal-item bg-premium-card rounded-2xl overflow-hidden border border-gray-800/50 flex p-3 gap-4 items-center">
+                        <div class="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
+                            <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-lg text-gray-200">${item.name}</h4>
+                            <p class="text-gray-500 text-xs mt-1 mb-2 line-clamp-2">${item.desc}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-xl text-white">${item.price}</span>
+                                <button onclick="addToCart(${item.id}, 'standard')" class="text-premium-gold bg-premium-dark border border-premium-gold/30 hover:bg-premium-gold hover:text-premium-dark w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-plus text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Find item by ID
+        function getItemById(id, type) {
+            if (type === 'golden') return goldenTriangleItems.find(i => i.id === id);
+            return standardItems.find(i => i.id === id);
+        }
+
+        // Add to Cart
+        function addToCart(id, type) {
+            const item = getItemById(id, type);
+            const existingItem = cart.find(i => i.id === id);
+
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            
+            // UI Feedback
+            const btn = document.getElementById('cart-floating-btn');
+            btn.classList.add('scale-110');
+            setTimeout(() => btn.classList.remove('scale-110'), 200);
+
+            updateCartUI();
+        }
+
+        // Update Cart UI
+        function updateCartUI() {
+            const floatingBtn = document.getElementById('cart-floating-btn');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+            const modalTotal = document.getElementById('modal-total');
+            const cartItemsContainer = document.getElementById('cart-items');
+
+            let totalQty = 0;
+            let totalPrice = 0;
+
+            cartItemsContainer.innerHTML = '';
+
+            if (cart.length === 0) {
+                floatingBtn.classList.add('hidden');
+                cartItemsContainer.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-gray-500">
+                        <i class="fa-solid fa-cart-arrow-down text-7xl mb-6 text-gray-700"></i>
+                        <p class="text-xl font-medium">سلتك الفاخرة فارغة</p>
+                    </div>`;
+            } else {
+                floatingBtn.classList.remove('hidden');
+                floatingBtn.classList.add('flex');
+                
+                cart.forEach((item, index) => {
+                    totalQty += item.qty;
+                    totalPrice += (item.price * item.qty);
+
+                    cartItemsContainer.innerHTML += `
+                        <div class="flex items-center justify-between bg-premium-dark p-4 rounded-2xl mb-4 border border-gray-800">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-xl overflow-hidden border border-gray-700">
+                                    <img src="${item.img}" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-gray-200">${item.name}</h5>
+                                    <div class="text-premium-gold font-black mt-1">${item.price}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 bg-premium-card rounded-xl p-1.5 border border-gray-700">
+                                <button onclick="changeQty(${index}, -1)" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-800 hover:text-white transition"><i class="fa-solid fa-minus"></i></button>
+                                <span class="font-bold text-lg w-4 text-center">${item.qty}</span>
+                                <button onclick="changeQty(${index}, 1)" class="w-8 h-8 rounded-lg flex items-center justify-center text-premium-gold hover:bg-premium-gold/20 transition"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            cartCount.innerText = totalQty;
+            cartTotal.innerText = totalPrice;
+            modalTotal.innerText = totalPrice;
+        }
+
+        // Change Quantity
+        function changeQty(index, change) {
+            cart[index].qty += change;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        // Toggle Modal
+        function toggleCartModal() {
+            const modal = document.getElementById('cart-modal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                updateCartUI(); 
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Send Order
+        function sendOrderWhatsApp() {
+            if (cart.length === 0) return;
+
+            let text = "🌟 *طلب جديد من المنيو الذهبي* 🌟\n\n";
+            let total = 0;
+
+            cart.forEach(item => {
+                text += `▪️ ${item.qty}x ${item.name} (${item.price * item.qty})\n`;
+                total += (item.price * item.qty);
+            });
+
+            text += `\n═════════════════\n`;
+            text += `*المجموع الإجمالي: ${total}*\n`;
+            text += `═════════════════\n\n`;
+            text += "أنتظر تأكيدكم للطلب. شكراً لكم!";
+
+            const encodedText = encodeURIComponent(text);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedText}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Init
+        renderGoldenTriangle();
+        renderStandardMenu();
+    </script>
+</body>
+</html>
